@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FX PAIRING</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+   }
+   body {
+    background: #f5f5dc;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    font-family: 'Fira Code', monospace;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+   }
+
+   .container {
+    max-width: 400px;
+    width: 90%;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+   }
+
+   .header {
+    text-align: center;
+    margin-bottom: 2rem;
+   }
+
+   .header h1 {
+    color: #1a73e8;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+   }
+
+   .main form {
+    display: flex;
+    flex-direction: column;
+   }
+
+   .input-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+   }
+
+   .input-group i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #5f6368;
+    z-index: 1;
+   }
+
+   .input-group input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    font-size: 1rem;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    background-color: #f1f3f4;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    font-family: 'Fira Code', monospace;
+    box-sizing: border-box;
+   }
+
+   .input-group input:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+   }
+
+   .input-group input::placeholder {
+    color: #80868b;
+   }
+
+   button {
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-family: 'Fira Code', monospace;
+   }
+
+   button:hover {
+    background-color: #1765cc;
+   }
+
+   #pair {
+    margin-top: 1rem;
+    text-align: center;
+    font-weight: 500;
+   }
+
+   /* Responsive styles */
+   @media screen and (max-width: 480px) {
+    body {
+     padding: 1rem;
+    }
+
+    .container {
+     width: 95%;
+     padding: 1.5rem;
+    }
+
+    .header h1 {
+     font-size: 1.5rem;
+    }
+
+    .input-group input,
+    button {
+     font-size: 0.9rem;
+    }
+
+    .input-group input {
+     padding: 0.6rem 1rem 0.6rem 2.2rem;
+    }
+
+    .input-group i {
+     font-size: 0.9rem;
+    }
+   }
+
+   @media screen and (max-width: 360px) {
+    .container {
+     padding: 1rem;
+    }
+
+    .header h1 {
+     font-size: 1.3rem;
+    }
+
+    .input-group input,
+    button {
+     font-size: 0.8rem;
+    }
+
+    .input-group input {
+     padding: 0.5rem 1rem 0.5rem 2rem;
+    }
+
+    .input-group i {
+     font-size: 0.8rem;
+     left: 0.8rem;
+    }
+   }
+  </style>
+ </head>
+ <body>
+  <div class="container">
+   <div class="header">
+    <h1>FXOP MD</h1>
+   </div>
+   <div class="main">
+    <form>
+     <div class="input-group">
+      <i class="fa fa-user"></i>
+      <input type="tel" id="number" placeholder="Enter phone number with country code" required />
+     </div>
+     <button id="submit">Submit</button>
+     <main id="pair"></main>
+    </form>
+   </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <script>
+   let a = document.getElementById('pair')
+   let b = document.getElementById('submit')
+   let c = document.getElementById('number')
+
+   let isSubmitting = false
+   let isCodeDisplayed = false
+
+   async function Copy() {
+    let text = document.getElementById('copy').innerText
+    let obj = document.getElementById('copy')
+    await navigator.clipboard.writeText(obj.innerText.replace('CODE: ', ''))
+    obj.innerText = 'COPIED'
+    obj.style = 'color:blue;font-weight:bold'
+    obj.size = '5'
+    setTimeout(() => {
+     obj.innerText = text
+     obj.style = 'color:black;font-weight-bold'
+     obj.size = '5'
+    }, 500)
+   }
+
+   b.addEventListener('click', async e => {
+    e.preventDefault()
+
+    if (isCodeDisplayed) {
+     alert('Please wait for 2 minutes before requesting a new code.')
+     return
+    }
+
+    if (isSubmitting) {
+     alert('Please wait for the code before trying to request again.')
+     return
+    }
+
+    if (!c.value) {
+     a.innerHTML = '<a style="color:black;font-weight:bold">Enter your WhatsApp number with a country code</a><br><br>'
+    } else if (c.value.replace(/[^0-9]/g, '').length < 11) {
+     a.innerHTML = '<a style="color:black;font-weight:bold">Invalid number format</a><br><br>'
+    } else {
+     isSubmitting = true
+
+     const bc = c.value.replace(/[^0-9]/g, '')
+     let bb = ''
+     let bbc = ''
+     const cc = bc.split('')
+     cc.map(a => {
+      bbc += a
+      if (bbc.length == 3) {
+       bb += ' ' + a
+      } else if (bbc.length == 8) {
+       bb += ' ' + a
+      } else {
+       bb += a
+      }
+     })
+
+     c.type = 'text'
+     c.value = '+' + bb
+     c.style = 'color:black;font-size:20px'
+     a.innerHTML = '<a style="color:black;font-weight:bold">Please wait for some time</a><br><br>'
+
+     try {
+      let { data } = await axios(`/pair?phone=${bc}`)
+      let code = data.code || 'Service Unavailable'
+      a.innerHTML = '<font id="copy" onclick="Copy()" style="color:red;font-weight:bold" size="5">CODE: <span style="color:black;font-weight:bold">' + code + '</span></font><br><br><br>'
+      isCodeDisplayed = true
+
+      setTimeout(() => {
+       isCodeDisplayed = false
+      }, 120000)
+     } catch (error) {
+     } finally {
+      isSubmitting = false
+     }
+    }
+   })
+  </script>
+ </body>
+</html>
