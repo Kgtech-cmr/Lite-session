@@ -31,7 +31,7 @@ const pastebin = new Pastebin({
   api_dev_key: "06S06TKqc-rMUHoHsrYxA_bwWp9Oo12y",
 });
 
-let PORT = process.env.PORT || 1000
+let PORT = process.env.PORT || 8000
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
